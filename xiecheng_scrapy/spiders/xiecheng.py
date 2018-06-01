@@ -123,10 +123,17 @@ class XiechengSpider(RedisCrawlSpider):
         # 若非第一次爬取，只爬取评论的前十页
         r = redis.Redis(host="10.0.0.97",port=6379,db=1)  
         if int(r.get("mark15").decode('utf-8')) > 1:
-            if (int(sceinc_comments_count.split('条')[0])//10) + 1 > 100:
-                page = 10 
+            if scenic_id in old_comments_scenic_id:
+                if (int(sceinc_comments_count.split('条')[0])//10) + 1 > 100:
+                    page = 10 
+                else:
+                    page = (int(sceinc_comments_count.split('条')[0])//10) + 1
             else:
-                page = (int(sceinc_comments_count.split('条')[0])//10) + 1
+                if int(sceinc_comments_count.split('条')[0]) < 3010:
+                    #获取评论页数
+                    page = (int(sceinc_comments_count.split('条')[0])//10) + 1
+                else:
+                    page = 302
         else:
             if int(sceinc_comments_count.split('条')[0]) < 3010:
                 #获取评论页数
